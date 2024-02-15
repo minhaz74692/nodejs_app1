@@ -1,10 +1,13 @@
 // console.log('I am in express');
 
 const express = require("express");
-const { errorHandler } = require("./middleWare/errorHandler");
+const connectDb = require("./config/dbConnection");
+const errorHandler = require("./middleWare/errorHandler");
 const dotenv = require("dotenv").config();
 
 const app = express();
+
+connectDb();
 
 const port = process.env.PORT || 5000
 
