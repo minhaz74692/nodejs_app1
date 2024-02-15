@@ -5,18 +5,26 @@ const getContacts = (req, res)=>{
     res.status(200).json({"message":'Get all contacts from controller'});
 }
 
-//@desc Post Contact
+//@desc Post Contacts
 //@route Post /api/contacts
 //@access public
 const postContacts = (req, res)=>{
-    res.status(200).json({"message":`Post Without Id, ${req.params.id}`});
+    res.status(200).json({"message":`Post Without Id,`});
 };
 
-//@desc Post Contact
+//@desc Post Contact with id
 //@route Post /api/contacts
 //@access public
 const createContact = (req, res)=>{
-    res.status(200).json({"message":`Post with Id, ${req.params.id}`});
+    const {name, age, email} = req.body;
+    if(!name || !age || !email){
+        res.status(400);
+        throw new Error('Required credentials are missing');
+    }else{
+        res.status(201).json({"message":`Post with Id, ${req.params.id}`});
+        // throw new Success('success');
+    }
+    
 };
 
 //@desc Put Contact
@@ -24,7 +32,7 @@ const createContact = (req, res)=>{
 //@access public
 const updateContact = (req, res)=>{
     console.log(`The body is : ${req.body['email']}`);
-    res.status(200).json({"message":`Put with Id, ${req.params.id}`});
+    res.status(200).json({"message":`Update with Id, ${req.params.id}`});
 };
 
 //@desc Delete Contact
