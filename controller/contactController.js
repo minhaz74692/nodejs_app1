@@ -48,32 +48,35 @@ const createNewContact = asyncHandler(async (req, res) => {
 //@route Post /api/contacts
 //@access public
 const createContactwithId = asyncHandler(async (req, res) => {
-    res.status(200).json({ "message": `Post With Id,` });
-
+    const { name, email, phone } = req.body;
+    const { id } = req.params.id;
+    if (!name || !phone || !email) {
+        res.status(400);
+        throw new Error('Required credentials are missing');
+    } else {
+        const contact = await Contact.findByIdAndUpdate(
+            id,
+            { name, email, phone },
+            { new: true, upsert: true },
+        )
+        res.status(201).json(contact);
+    }
 });
 
 //@desc Put Contact
 //@route Put /api/contacts
 //@access public
 const updateContact = asyncHandler(async (req, res) => {
-    const { name, email, phone } = req.body;
-    try {
-        const contact = await Contact.findById(req.params.id);
-        // res.status(200).json(contact);
-    } catch (error) {
-        res.status(404);
-        throw new Error('Contact not found');
-    }
+    const updatedContact = Contact.findByIdAndUpdate(req.params.id, req.body);
+    updatedContact
+        .then(updatedContact => {
+            res.status(201).json(updatedContact);
+        })
+        .catch(error => {
+            console.error('Error updating contact:', error);
+            res.status(404).json({ error: 'An error occurred while updating contact' });
+        });
 
-    try {
-        // const contact = await Contact.findById(req.params.id);
-        const updatedContact = Contact.findByIdAndUpdate(req.params.id, req.body, { new: true },
-        );
-        res.status(201).json(updatedContact);
-    } catch (error) {
-        res.status(404);
-        throw new Error('Contact not found');
-    }
 
 });
 
@@ -81,7 +84,15 @@ const updateContact = asyncHandler(async (req, res) => {
 //@route Delete /api/contacts
 //@access public
 const deleteContact = asyncHandler(async (req, res) => {
-    res.status(200).json({ "message": `Delete with Id, ${req.params.id}` });
+    try {
+        const contact = await Contact.findById(req.params.id);
+        await Contact.findByIdAndDelete(req.params.id);
+        res.status(201).json(contact);
+    } catch (error) {
+        res.status(404);
+        throw new Error({ message: 'Error is: ', error });
+    }
+
 });
 
 module.exports = { getAllContacts, getContact, createNewContact, createContactwithId, updateContact, deleteContact };

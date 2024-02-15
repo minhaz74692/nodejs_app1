@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.route('/').get(getAllContacts).post(createNewContact)
 
-router.route('/:id').get(getContact).post(createContactwithId).put(updateContact).delete(deleteContact)
-
+router.route('/:id').get(getContact).post(createContactwithId).delete(deleteContact)
+router.route("/:id").put(updateContact);
 module.exports = router;
